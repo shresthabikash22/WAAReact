@@ -1,0 +1,24 @@
+.post-container{
+    width:10rem;
+    height: 9rem ;
+    padding:10px ;
+    border-width: 2px;
+}
+.updateDetails-Container{
+    background-color: lightslategray;
+    text-align: center;
+    
+
+}
+
+.UpdateDetails-Post{
+    border-width: 0px;
+    border-radius: opx;
+}
+
+.edit-button {
+    margin-right: 10px; /* Adjust the margin as needed */
+  }
+
+  
+

@@ -8,7 +8,7 @@ function Posts(props) {
     <div className="container my-5">
         <div className='row '>
            { props.posts.map(post=>{
-                 return  <div className="col" key ={post.id}>
+                 return  <div className="col" >
                  <Post
                  title = {post.title}
                  author = {post.author}

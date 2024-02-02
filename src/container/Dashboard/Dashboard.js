@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import Posts from '../Posts/Posts';
 import PostDetails from '../../components/PostDetails/PostDetails';
 import { UpdateTitle } from '../UpdateTitle/UpdateTitle';
 import { fetchService } from '../../services/fetchServices';
 import NewPost from '../../components/NewPost/NewPost';
+import {PostContext} from '../../context/PostIdContext';
 
 function Dashboard() {
   const [flag, setFlag] = useState(true);
@@ -68,8 +69,11 @@ function Dashboard() {
       </div>
       <Posts posts={posts} setSelected={setSelected} />
       {posts!=null && posts.length>0 &&    <UpdateTitle setUpdatedPost={handleUpdatedPost} />}
-       { selectedPost!=null &&   <PostDetails post={selectedPost} fetchPostsCallback={fetchPostsCallback}  />
-        
+       {
+          selectedPost!=null &&  
+          <PostContext.Provider value = {selectedPost.id}>
+              <PostDetails post={selectedPost} fetchPostsCallback={fetchPostsCallback}  />
+          </PostContext.Provider>
       }
       <NewPost isOpen={isAddFormOpen} onClose={closeAddForm} fetchPostsCallback={fetchPostsCallback}/>
     </div>

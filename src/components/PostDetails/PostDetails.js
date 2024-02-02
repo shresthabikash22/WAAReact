@@ -1,16 +1,20 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import '../../css/customstyle.css';
 import { fetchService } from '../../services/fetchServices';
+import {PostContext} from '../../context/PostIdContext';
+import Comment from '../Comment/Comment';
 
-const PostDetails = ({post,fetchPostsCallback}) => {
+const PostDetails = ({fetchPostsCallback}) => {
+    const id = useContext(PostContext);
 
     const [PostDetails,setPostDetails] = useState(null);
 
     useEffect(()=>{
         const fetchPostDetails = async() =>{
-            if(post){
+            if(id){
                 try{
-                    const postData = await fetchService.get(`posts/${post.id}`);
+                    const postData = await fetchService.get(`posts/${id}`);
+                    
                     setPostDetails(postData);
                 }catch(e){
                     console.error('Error fetching post details',e);
@@ -18,12 +22,12 @@ const PostDetails = ({post,fetchPostsCallback}) => {
             }
         };
         fetchPostDetails();
-    },[post]);
+    },[id]);
 
     const handleDeletePost = async () =>{
-        if(post){
+        if(id){
             try{
-                await fetchService.deletePost(`posts/${post.id}`);
+                await fetchService.deletePost(`posts/${id}`);
                 setPostDetails(null);
                 fetchPostsCallback();
             }catch(e){
@@ -45,11 +49,30 @@ const PostDetails = ({post,fetchPostsCallback}) => {
                         <div>
                             <button className="btn btn-primary edit-button">Edit</button> 
                             <button className="btn btn-danger" onClick={handleDeletePost}>Delete</button>
-                        </div>
+                        </div> 
                     </div>
+                    
+                        {
+                            PostDetails.comments  && PostDetails.comments.length > 0 ?
+                           (
+                            <div className="card w-95" style={{textAlign:'left'}}>
+                                <div className='card-header'><h4>Comments</h4></div>
+                                <ul className="list-group list-group-flush" style={{paddingLeft:'5em'}}>
+                                    {PostDetails.comments.map((comment) => (
+                                        
+                                        <li className="card-text" key={comment.id} >
+                                            <Comment comment={comment} />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                           
+                           ):( <p>No comments </p>)
+                        }
+                    <br/>
                 </div>
             ):(
-                null
+                ' '
             )}
         </div>
     );

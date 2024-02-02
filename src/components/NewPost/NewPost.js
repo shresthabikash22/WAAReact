@@ -1,35 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import './NewPost.css';
 import { fetchService } from '../../services/fetchServices';
 
 const NewPost = ({isOpen,onClose,fetchPostsCallback}) => {
-   
-
-    const [newPost,setNewPost] = useState({
-            title: '',
-            author: '',
-            content: ''
-    });
+   const formRef = useRef(null);
 
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setNewPost({ ...newPost, [name]: value });
-    };
-
+ 
     const handleAddPost = async(e) =>{
         e.preventDefault();
-        console.log(newPost);
-        if(newPost.title!=='' && newPost.author!=='' && newPost.content!=='')
+        const title = formRef.current.elements.title.value;
+        const author = formRef.current.elements.author.value;
+        const content = formRef.current.elements.content.value;
+        if(title!=='' && author!=='' && content!=='')
         {
             try{
-                await fetchService.post(`posts`,newPost);
-                setNewPost({
-                    title: '',
-                    author: '',
-                    content: ''
-                });
+                await fetchService.post(`posts`,{title,author,content});
+                setErrorMessage('');
                 onClose();
                 fetchPostsCallback();
             }catch(error){
@@ -43,6 +31,7 @@ const NewPost = ({isOpen,onClose,fetchPostsCallback}) => {
     }
 
     useEffect(() => {
+        console.log('isOPen:',isOpen);
         if (isOpen) {
             setErrorMessage('');
         }
@@ -60,23 +49,23 @@ const NewPost = ({isOpen,onClose,fetchPostsCallback}) => {
                     
                     
                     <hr/>
-                    <form className="form-group">
+                    <form className="form-group" ref={formRef}>
                         <div className='mb-3 row'>
                             <label className='col-sm-2 col-form-label'>Title</label>
                             <div className="col-sm-10">
-                                 <input type="text" name ="title" value={newPost.title} onChange={handleChange}/>
+                                 <input type="text" name ="title" />
                             </div>
                         </div>
                         <div className='mb-3 row'>
                             <label className='col-sm-2 col-form-label'>Author</label>
                             <div className="col-sm-10">
-                                <input type="text" name="author" value={newPost.author} onChange={handleChange}/>
+                                <input type="text" name="author" />
                             </div>
                         </div>
                         <div className='mb-3 row'>
                             <label className='col-sm-2 col-form-label'>Content</label>
                             <div className="col-sm-10">
-                                <textarea type="textarea" name ="content" value={newPost.content} onChange={handleChange} />
+                                <textarea type="textarea" name ="content"/>
                             </div>
                         </div>
                         <button type="submit"  className="btn btn-primary" onClick={handleAddPost}>Submit</button>
